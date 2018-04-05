@@ -35,7 +35,7 @@ const plugins = [
 
 export default [
     {
-        input      : './src/mduikit.light.js',
+        input      : './src/light.js',
         output     : {
             format : 'iife',
             name   : 'mduikit',
