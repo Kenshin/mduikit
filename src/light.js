@@ -7,7 +7,7 @@
  * @param {object} include: href, type, mode, disable, color, bgColor, shadow
  */
 const Button = ( id, text, others = {} ) => {
-    let style  = {};
+    let style   = {};
     const param = {
         href   : "javascript:;",
         type   : "raised",    // include: raised flat
@@ -32,7 +32,7 @@ const Button = ( id, text, others = {} ) => {
         style.bgColor = "transparent";
         style.shadow  = "none";
     }
-    style.disable = style.disable == true ? disable[style.type] : "";
+    style.disable = style.disable == true        ? disable[style.type]   : "";
     style.mode    = style.mode    == "secondary" ? secondary[style.type] : "";
 
     return `<a id="${id}" style="display:block;min-width:88px;height:36px;margin:6px;padding:0;font-family:sans-serif;text-decoration:none;cursor:pointer;border:none;border-radius:2px;box-shadow:${style.shadow};color:${style.color};background-color:${style.bgColor};margin-right:0px;${style.disable}" class="md-waves-effect md-waves-button" href="${style.href}" target="_self" type="${style.type}">
