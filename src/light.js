@@ -26,13 +26,13 @@ const Button = ( id, text, others = {} ) => {
         flat   : "opacity: 0.6;",
         raised : "backgroundColor: rgba( 153, 153, 153, .2);"
     };
+    if ( others.type == "flat" ) {
+        param.color   = "rgba(0, 137, 123, .8)";
+        param.bgColor = "transparent";
+        param.shadow  = "none";
+    }
 
     Object.assign( style, param, others );
-    if ( style.type == "flat" ) {
-        style.color   = "rgba(0, 137, 123, .8)";
-        style.bgColor = "transparent";
-        style.shadow  = "none";
-    }
     style.disable = style.disable == true        ? disable[style.type]   : "";
     style.mode    = style.mode    == "secondary" ? secondary[style.type] : "";
 
