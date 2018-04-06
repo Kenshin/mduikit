@@ -1,10 +1,9 @@
-
 /**
  * Button
  * 
  * @param {string} id 
  * @param {string} text 
- * @param {object} include: href, type, mode, disable, color, bgColor, shadow
+ * @param {object} include: href, type, mode, disable, color, bgColor, shadow, css, width
  */
 const Button = ( id, text, others = {} ) => {
     let style   = {};
@@ -16,6 +15,8 @@ const Button = ( id, text, others = {} ) => {
         color  : "rgba(255, 255, 255, .7)", 
         bgColor: "rgba(0, 137, 123, 1)",
         shadow : "0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2)",
+        css    : "",
+        width  : "",
         onclick: undefined
     },
     disable    = {
@@ -35,10 +36,11 @@ const Button = ( id, text, others = {} ) => {
     Object.assign( style, param, others );
     style.disable = style.disable == true        ? disable[style.type]   : "";
     style.mode    = style.mode    == "secondary" ? secondary[style.type] : "";
-
+    style.width   = others.width  != undefined   ? `width: ${others.width};` : "";
+ 
     style.onclick && $( "html" ).on( "click", `#${id}`, style.onclick );
 
-    return `<a id="${id}" style="display:block;min-width:88px;height:36px;margin:6px;padding:0;font-family:sans-serif;text-decoration:none;cursor:pointer;border:none;border-radius:2px;box-shadow:${style.shadow};color:${style.color};background-color:${style.bgColor};margin-right:0px;${style.disable}" class="md-waves-effect md-waves-button" href="${style.href}" target="_self" type="${style.type}">
+    return `<a id="${id}" style="display:block;min-width:88px;height:36px;margin:6px;padding:0;font-family:sans-serif;text-decoration:none;cursor:pointer;border:none;border-radius:2px;box-shadow:${style.shadow};color:${style.color};background-color:${style.bgColor};margin-right:0px;${style.disable};${style.width};${style.css};" class="md-waves-effect md-waves-button" href="${style.href}" target="_self" type="${style.type}">
                 <button-mask style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; margin: 0px; padding: 0px 8px; border: medium none; border-radius: 2px; box-sizing: border-box; transition: all 0.5s ease-in-out 0s; background-color: transparent;${style.mode}">
                     <button-span style="display:flex;align-items:center;user-select:none;">
                         <button-icon style="order:-1;display:none;width:24px;height:24px;border:none;background-position:center;background-repeat:no-repeat;"></button-icon>
