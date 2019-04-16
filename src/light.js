@@ -113,8 +113,8 @@ const Textarea = ( id, text, others = {} ) => {
 /**
  * TextField
  *
- * @version : 0.0.1
- * @update  : 2018/08/15
+ * @version : 0.0.2
+ * @update  : 2019/04/16
  * 
  * @param {string} id 
  * @param {string} text 
@@ -146,6 +146,7 @@ const TextField = ( id, text, others = {} ) => {
     style.disable = style.disable == true        ? disable[style.type]   : "";
     style.width   = others.width  != undefined   ? `width: ${others.width};` : "";
     style.height  = others.height != undefined   ? `height: ${others.height};` : "";
+    style.focus   = others.focus != undefined    ? `autofocus` : "";
 
     $( "html" ).on( "focus", `#${id}`, event => {
         $( `#field-${id}` ).find( "#state" ).css({ transform: "scaleX(1)" });
@@ -159,12 +160,12 @@ const TextField = ( id, text, others = {} ) => {
 
     return `<text-field id="field-${id}" style="display:block;position:relative;margin:0;padding:0;width:100%;line-height:1;">
                 <text-field-float id="float" style="display: block; position: absolute; margin: -8px 0px 0px; color: ${style.float_color}; font-size: 14px; font-weight: bold; pointer-events: none; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms; transform: scale(0.75) translate(0px, -8px); transform-origin: left top 0px; -moz-user-select: none;${style.css.float}"></text-field-float>
-                <input id="${id}" style="position:relative;color:rgba(51, 51, 51, .87);background-color:transparent;width:100%;height:20px;margin:8px 0 0 0;padding:0;font-family:sans-serif;font-size:${style.size};line-height:1.5;cursor:inherit;border:none;outline:none;resize:none;box-sizing:border-box;-webkit-tap-highlight-color:rgba(0, 0, 0, 0);-webkit-appearance:textfield;color:${style.color};${style.width};${style.height};${style.css.textarea};" placeholder="${style.placeholder}" value="${text}">
+                <input id="${id}" ${style.focus} style="position:relative;color:rgba(51, 51, 51, .87);background-color:transparent;width:100%;height:20px;margin:8px 0 0 5px;padding:0;font-family:sans-serif;font-size:${style.size};line-height:1.5;cursor:inherit;border:none;outline:none;resize:none;box-sizing:border-box;-webkit-tap-highlight-color:rgba(0, 0, 0, 0);-webkit-appearance:textfield;color:${style.color};${style.width};${style.height};${style.css.textarea};" placeholder="${style.placeholder}" value="${text}">
                 <div>
                     <text-field-border id="border" style="display:block;width:100%;margin:8px 0 0 0;${style.border_color};box-sizing:content-box;${style.css.border}"></text-field-border>
                     <text-field-state id="state" style="display: block; position: absolute; width: 100%; margin: -1px 0px 0px; border-width: medium medium 2px; border-style: none none solid; border-color: ${style.state_color}; box-sizing: content-box; transform: scaleX(0); transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;${style.css.state}"></text-field-state>
                 </div>
-                <text-field-error id="error" style="display:block;position:relative;margin:8px 0 0 0;max-width:428px;font-size:14px;font-weight:bold;line-height:1.5;text-align:initial;word-wrap:break-word;user-select:none;color:${style.error_color};transform:scale(0.75) translate( -73px, 0 );${style.css.error}"></text-field-error>
+                <text-field-error id="error" style="display:block;position:absolute;margin:8px 0 0 0;max-width:428px;font-size:14px;font-weight:bold;line-height:1.5;text-align:initial;word-wrap:break-word;user-select:none;color:${style.error_color};transform:scale(0.75) translate( 0, 0 );${style.css.error}"></text-field-error>
             </text-field>`;
 }
 
