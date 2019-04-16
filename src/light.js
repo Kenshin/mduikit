@@ -155,8 +155,8 @@ const TextField = ( id, text, others = {} ) => {
         $( `#field-${id}` ).find( "#state" ).css({ transform: "scaleX(0)" });
     });
 
-    destorys.push({ id, event: "focus" });
-    destorys.push({ id, event: "blur" });
+    destorys && destorys.push({ id, event: "focus" });
+    destorys && destorys.push({ id, event: "blur" });
 
     return `<text-field id="field-${id}" style="display:block;position:relative;margin:0;padding:0;width:100%;line-height:1;">
                 <text-field-float id="float" style="display: block; position: absolute; margin: -8px 0px 0px; color: ${style.float_color}; font-size: 14px; font-weight: bold; pointer-events: none; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms; transform: scale(0.75) translate(0px, -8px); transform-origin: left top 0px; -moz-user-select: none;${style.css.float}"></text-field-float>
