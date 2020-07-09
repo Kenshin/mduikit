@@ -23,6 +23,7 @@ const Button = ( id, text, others = {} ) => {
         width  : "",
         onclick: undefined
     },
+    hoverColor = "rgba( 153, 153, 153, .4)",
     disable    = {
         flat   : "cursor: no-drop; color: rgba(0, 0, 0, 0.298039);",
         raised : "cursor: no-drop; color: rgba(0, 0, 0, 0.298039); background-color: rgb(229, 229, 229); box-shadow: none;"
@@ -307,6 +308,54 @@ const AutoComplete = ( id, text, items, others = {} ) => {
 }
 
 /**
+ * Dialog
+ *
+ * @version : 0.0.1
+ * @update  : 2020/07/09
+ * 
+ * @param {string} id
+ * @param {string} header
+ * @param {string} cotent
+ * @param {string} footer
+ * @param {object} action include: open close
+ * @param {object} include: style
+ */
+const Dialog = ( id, header, content, footer, action, others = { style:{ header: "", content: "", footer: "" }} ) => {
+    const param = {},
+          csses = {
+                open: {
+                    opacity: 1,
+                    transform: 'translateY(0px)'
+                },
+                close: {
+                    opacity: 0,
+                    transform: 'translateY(1000px)'
+                },
+                bg      : "position: fixed;top: 0px;left: 0px;display: flex;justify-content: center;align-items: center;width: 100%;height: 100%;color: rgb(255, 255, 255);text-shadow: rgba(0, 0, 0, 0.3) 0px 1px;opacity: 0;transform: translateY(1000px);transition: all 1s cubic-bezier(0.23, 1, 0.32, 1) 0ms;z-index: 2147483646;",
+                root    : "display: -webkit-flex;flex-direction: column;margin: 0;padding: 0;min-width: 480px;min-height: 300px;color: rgba(0, 0, 0, 0.870588);background-color: rgb(255, 255, 255);border-radius: 3px;box-sizing: border-box;box-shadow: rgba(0, 0, 0, 0.247059) 0px 14px 45px, rgba(0, 0, 0, 0.219608) 0px 10px 18px;",
+                header  : "display: block;padding: 24px 24px 20px 24px;min-height: 25px;line-height: 25px;font-size: 21px;font-weight: 500;color: #fff;background-color: rgb(100, 181, 246);",
+                content : "display: block;padding: 24px 24px 0;width: 100%;min-height: 244px;max-height: 580px;overflow-y: auto;box-sizing: border-box;",
+                footer  : "display: -webkit-flex;flex-flow: row nowrap;justify-content: flex-end;width: 100%;min-height: 52px;box-sizing: border-box;",
+          };
+
+    action.open  = id => {
+        setTimeout( () => $( `mduikit-dialog-gp#${id}` ).css( csses.open ), 200 );
+    };
+    action.close = id => {
+        $( `mduikit-dialog-gp#${id}` ).css( csses.close );
+        setTimeout( () => $( `mduikit-dialog-gp#${id}` ).remove(), 200 );
+    };
+
+    return `<mduikit-dialog-gp id="${id}" style="${csses.bg}">
+                <diglog style="${csses.root}">
+                    <dialog-header  style="${ csses.header  + others.style.header  }">${ header  }</dialog-header>
+                    <dialog-content style="${ csses.content + others.style.content }">${ content }</dialog-content>
+                    <dialog-footer  style="${ csses.footer  + others.style.footer  }">${ footer  }</dialog-footer>
+                </diglog>
+            </mduikit-dialog-gp>`;
+}
+
+/**
  * Clean events
  * 
  * @param {array} id array, e.g. [ "id1", "id2" ]
@@ -322,5 +371,6 @@ export {
     Textarea,
     TextField,
     AutoComplete,
+    Dialog,
     Destory
 }
