@@ -369,6 +369,72 @@ const Dialog = ( id, header, content, footer, action, others = { style:{ header:
 }
 
 /**
+ * Switch
+ *
+ * @version : 0.0.1
+ * @update  : 2020/07/09
+ * 
+ * @param {string} id
+ * @param {string} text
+ * @param {string} subtitle
+ * @param {object} include: css, width, thumbColor, trackColor
+ */
+const Switch = ( id, toggle = false, text, subtitle, others = {} ) => {
+    let style   = {};
+    const param = {
+        width  : "",
+        thumb  : "",
+        track  : "",
+        thumbColor: "rgb(63, 81, 181)",
+        trackColor: "rgb(121, 134, 203)",
+        onclick: undefined,
+    },
+    csses  = {
+        open: {
+            thumb: { "margin-left": "-20px", "left": "100%", "background-color": others.thumbColor || param.thumbColor },
+            track: { "background-color": others.trackColor || param.trackColor }
+        },
+        close: {
+            thumb: { "margin-left": "initial", "left": "0", "background-color": "rgb(245, 245, 245)" },
+            track: { "background-color": "rgb(189, 189, 189)" }
+        }
+    };
+
+    Object.assign( style, param, others );
+
+    style.onclick && destorys.push({ id, event: "click" });
+    style.width   = others.width  != undefined ? `width: ${others.width};` : "";
+    toggle && ( style.thumb = JSON.stringify( csses.open.thumb ).replace(/{|}/ig, "").replace(/","/ig, ";").replace(/":"/ig, ":").replace(/"/ig, "") );
+    toggle && ( style.track = JSON.stringify( csses.open.track ).replace(/{|}/ig, "").replace(/","/ig, ";").replace(/":"/ig, ":").replace(/"/ig, "") );
+
+    !style.css && ( style.css = {} );
+
+    $( "html" ).on( "click", `#${id}`, event => {
+        if ( !$( `switch#${id}` ).find( "switch-rang" ).hasClass( "active" ) ) {
+            $( `switch#${id}` ).find( "thumb" ).css( csses.open.thumb );
+            $( `switch#${id}` ).find( "track" ).css( csses.open.track );
+        } else {
+            $( `switch#${id}` ).find( "thumb" ).css( csses.close.thumb );
+            $( `switch#${id}` ).find( "track" ).css( csses.close.track );
+        }
+        $( `switch#${id}` ).find( "switch-rang" ).toggleClass( "active" );
+        toggle = !toggle;
+        style.onclick && style.onclick( event, toggle );
+    });
+
+    return `<switch id="${id}" style="display:flex;align-items:center;position:relative;width:100%;${style.width};margin:8px 0 0 0;padding:0;overflow:visible;color:rgba(51, 51, 51, .87);cursor:pointer;${style.css.root||''};">
+                <content style="display:flex;flex-direction:column;align-items:flex-start;width:100%;${style.css.content||''};">
+                    <title style="display:block;width:100%;font-family:sans-serif;font-size:14px;font-weight:400;user-select:none;pointer-events:none;text-align:left;order:-1;${style.css.title||''};">${ text }</title>
+                    <subtitle style="display:-webkit-box;flex-shrink:2;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;text-align:left;color:rgba( 51, 51, 51, .54 );${style.css.subtitle||''};">${ subtitle || "" }</subtitle>
+                </content>
+                <switch-rang class="${ toggle ? 'active' : '' }" style="display:block;position:relative;float:left;flex-shrink:0;width:36px;margin:0 0 0 8px;padding:4px 0px 6px 2px;transition:all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;">
+                    <thumb style="display: block; position: absolute; top: 1px; left: 0px; width: 20px; height: 20px; color: rgba(51, 51, 51, 0.87); background-color: rgb(245, 245, 245); box-shadow: rgba(0, 0, 0, 0.118) 0px 1px 6px, rgba(0, 0, 0, 0.118) 0px 1px 4px; box-sizing: border-box; border-radius: 50%; transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;${style.thumb};" class="md-waves-effect"></thumb>
+                    <track style="display: block; width: 100%; height: 14px; border-radius: 30px; background-color: rgb(189, 189, 189); transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;${style.track};"></track>
+                </switch-rang>
+            </switch>`;
+}
+
+/**
  * Clean events
  * 
  * @param {array} id array, e.g. [ "id1", "id2" ]
@@ -385,5 +451,6 @@ export {
     TextField,
     AutoComplete,
     Dialog,
+    Switch,
     Destory
 }
