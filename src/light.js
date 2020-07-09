@@ -4,6 +4,9 @@ let destorys = [];
 
 /**
  * Button
+ *
+ * @version : 0.0.2
+ * @update  : 2020/07/09
  * 
  * @param {string} id 
  * @param {string} text 
@@ -45,6 +48,16 @@ const Button = ( id, text, others = {} ) => {
 
     style.onclick && $( "html" ).on( "click", `#${id}`, style.onclick );
     style.onclick && destorys.push({ id, event: "click" });
+
+    $( "html" ).on( "mouseenter", `#${id}`, event => {
+        $( `a#${id}` ).find( "button-mask" ).css({ "background-color": hoverColor });
+    });
+    $( "html" ).on( "hover", `#${id}`, event => {
+        $( `a#${id}` ).find( "button-mask" ).css({ "background-color": "transparent" });
+    });
+
+    destorys.push({ id, event: "mouseenter" });
+    destorys.push({ id, event: "mouseleave" });
 
     return `<a id="${id}" style="display:block;min-width:88px;height:36px;margin:6px;padding:0;font-family:sans-serif;text-decoration:none;cursor:pointer;border:none;border-radius:2px;box-shadow:${style.shadow};color:${style.color};background-color:${style.bgColor};margin-right:0px;${style.disable};${style.width};${style.css};" class="md-waves-effect md-waves-button" href="${style.href}" target="_self" type="${style.type}">
                 <button-mask style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; margin: 0px; padding: 0px 8px; border: medium none; border-radius: 2px; box-sizing: border-box; transition: all 0.5s ease-in-out 0s; background-color: transparent;${style.mode}">
