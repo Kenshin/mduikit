@@ -52,7 +52,7 @@ const Button = ( id, text, others = {} ) => {
     $( "html" ).on( "mouseenter", `#${id}`, event => {
         $( `a#${id}` ).find( "button-mask" ).css({ "background-color": hoverColor });
     });
-    $( "html" ).on( "hover", `#${id}`, event => {
+    $( "html" ).on( "mouseleave", `#${id}`, event => {
         $( `a#${id}` ).find( "button-mask" ).css({ "background-color": "transparent" });
     });
 
