@@ -18,6 +18,7 @@
   },
   "scripts": {
     "develop": "cross-env NODE_ENV=development rollup -c -w",
+    "deploy": "cross-env NODE_ENV=development rollup -c",
     "publish": "cross-env NODE_ENV=production  rollup -c"
   },
   "devDependencies": {
