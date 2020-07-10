@@ -435,6 +435,112 @@ const Switch = ( id, toggle = false, text, subtitle, others = {} ) => {
 }
 
 /**
+ * Dropdown
+ *
+ * @version : 0.0.1
+ * @update  : 2020/07/10
+ * 
+ * @param {string} id
+ * @param {string} text
+ * @param {array} items
+ * @param {object} include: width, onchange
+ */
+const Dropdown = ( id, text, items, others = {} ) => {
+    let style   = {};
+    const param = {
+        height : "20px;",
+        width  : "100%",
+        size   : "14px",
+        color  : "rgba(51, 51, 51, .87)",
+        hoverColor  : "rgba(238, 238, 238, 1)",
+        css    : {
+            float   : "",
+            textarea: "",
+            border  : "",
+            state   : "",
+            error   : ""
+        },
+    },
+    csses  = {
+        open: {
+            list: { "opacity": 1, "transform": "scaleY(1)" },
+            bg  : { display: "block" }
+        },
+        close: {
+            list: { "opacity": 0, "transform": "scaleY(0)" },
+            bg  : { display: "none" }
+        }
+    };
+
+    const listField = ({ name, value }) => {
+        return `<list-field class="" style="display: flex; align-items: center; padding: 8px 24px 8px 16px; height: 36px; width: 100%; text-align: left; box-sizing: border-box; transition: all 1s cubic-bezier(0.23, 1, 0.32, 1) 0ms; background-color: rgb(238, 238, 238);" active="true">
+                    <i style="display:none;width:18px;height:18px;margin:0 10px 0 0;padding:10px;border:none;background-position:center;background-repeat:no-repeat;"></i>
+                    <list-field-name style="display:inline;width:100%;font-size:inherit;${ text == name ? 'color: rgba(255, 64, 129, 1);' : '' }" value="${value}">${name}</list-field-name>
+                </list-field>`
+    };
+
+    const listeView = filter => {
+        let tmpl = "";
+        filter.forEach( item => {
+            tmpl += listField( item );
+        });
+        $( `dropdown#${id}` ).find( "list-view" ).html( tmpl );
+    };
+
+    Object.assign( style, param, others );
+    style.width   = others.width  != undefined   ? `width: ${others.width};` : "";
+
+    $( "html" ).on( "mouseover", `#${id} list-field`, event => {
+        const $target = $( event.target );
+        if ( $target.is( "list-field" ) ) {
+            $( "list-field[active=true]" ).css( "background-color", "transparent" ).attr( "active", false );
+            $target.attr( "active", true ).css( "background-color", style.hoverColor );
+        }
+    });
+    $( "html" ).on( "click", `#${id} list-field`, event => {
+        const $target = $( event.currentTarget ).find( "list-field-name" ),
+              name    = $target.text(),
+              value   = $target.attr( "value" );
+        $( `dropdown#${id}` ).find( "sr-span"   ).text( name );
+        $( `dropdown#${id}` ).find( "icon"      ).attr( "data-state", "close" );
+        $( `dropdown#${id}` ).find( "list-view" ).css( csses.close.list );
+        $( `dropdown#${id}` ).find( "list-bg"   ).css( csses.close.bg );
+        text = name;
+        style.onchange && style.onchange( value, name );
+    });
+    $( "html" ).on( "click", `#${id} list-bg`, () => {
+        $( `dropdown#${id}` ).find( "icon"      ).attr( "data-state", "close" );
+        $( `dropdown#${id}` ).find( "list-view" ).css( csses.close.list );
+        $( `dropdown#${id}` ).find( "list-bg"   ).css( csses.close.bg );
+    });
+    $( "html" ).on( "click", `#${id} icon`, event => {
+        if ( event.target.dataset.state == "close" || !event.target.dataset.state ) {
+            listeView( items );
+            event.target.dataset.state = "open";
+            $( `dropdown#${id}` ).find( "list-view" ).css( csses.open.list );
+            $( `dropdown#${id}` ).find( "list-bg" ).css( csses.open.bg );
+        } else {
+            listeView( [] );
+            event.target.dataset.state = "close";
+            $( `dropdown#${id}` ).find( "list-view" ).css( csses.close.list );
+            $( `dropdown#${id}` ).find( "list-bg" ).css( csses.close.bg );
+        }
+    });
+
+    destorys.push({ id: `${id} list-field`, event: "mouseover" });
+    destorys.push({ id: `${id} list-field`, event: "click" });
+    destorys.push({ id: `${id} list-bg`,    event: "click" });
+    destorys.push({ id: `${id} icon`,       event: "click" });
+
+    return `<dropdown id="${id}" style="position:relative;display:flex;align-items:center;margin:0;padding:0;height:36px;width:80px;line-height:1;cursor:pointer;user-select:none;${style.width};${style.height};">
+                <sr-span style="display:block;margin:0;padding:8px 24px 8px 0;width:100%;text-align:left;">${text}</sr-span>
+                <icon style="display:block;position:absolute;width:24px;height:24px;top:6px;right:0;border:none;background-position:center;background-repeat:no-repeat;background-image:url( data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNXG14zYAAABqSURBVEiJ7dQxCsAgDIXhZ8ktgmetVw31GIF06lI0yeIWJyH4f4hgMzOcXNfRegEFFAAAoGA+ROR2A0STmftu7t5ARAYRTS+uqtt4CACAqvYVkomngBWSjQPxG/yR59tnz7X6rgso4DzwAnJQKlbAmFdgAAAAAElFTkSuQmCC);"></icon>
+                <list-view style="display:block;position:absolute;top:0;left:0;margin:0;padding:0;width:100%;max-height:300px;color:rgba(51, 51, 51, .87);background-color:rgba(255, 255, 255, 1);box-sizing:border-box;box-shadow:0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2);border-radius:2px;z-index:2100;overflow-y:auto;opacity:0;transform:scaleY(0);transform-origin:left top 0px;transition:transform 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms, opacity 1s cubic-bezier(0.23, 1, 0.32, 1) 0ms;"></list-view>
+                <list-bg style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;"></list-bg>
+            </dropdown>`;
+}
+
+/**
  * Clean events
  * 
  * @param {array} id array, e.g. [ "id1", "id2" ]
@@ -452,5 +558,6 @@ export {
     AutoComplete,
     Dialog,
     Switch,
+    Dropdown,
     Destory
 }
