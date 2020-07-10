@@ -477,7 +477,7 @@ const Dropdown = ( id, text, items, others = {} ) => {
     };
 
     const listField = ({ name, value }) => {
-        return `<list-field class="" style="display: flex; align-items: center; padding: 8px 24px 8px 16px; height: 36px; width: 100%; text-align: left; box-sizing: border-box; transition: all 1s cubic-bezier(0.23, 1, 0.32, 1) 0ms; background-color: rgb(238, 238, 238);" active="true">
+        return `<list-field class="" style="display: flex; align-items: center; padding: 8px 24px 8px 16px; height: 36px; width: 100%; text-align: left; box-sizing: border-box; transition: all 1s cubic-bezier(0.23, 1, 0.32, 1) 0ms; background-color: transparent;">
                     <i style="display:none;width:18px;height:18px;margin:0 10px 0 0;padding:10px;border:none;background-position:center;background-repeat:no-repeat;"></i>
                     <list-field-name style="display:inline;width:100%;font-size:inherit;${ text == name ? 'color: rgba(255, 64, 129, 1);' : '' }" value="${value}">${name}</list-field-name>
                 </list-field>`
