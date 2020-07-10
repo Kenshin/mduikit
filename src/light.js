@@ -402,7 +402,6 @@ const Switch = ( id, toggle = false, text, subtitle, others = {} ) => {
 
     Object.assign( style, param, others );
 
-    style.onclick && destorys.push({ id, event: "click" });
     style.width   = others.width  != undefined ? `width: ${others.width};` : "";
     toggle && ( style.thumb = JSON.stringify( csses.open.thumb ).replace(/{|}/ig, "").replace(/","/ig, ";").replace(/":"/ig, ":").replace(/"/ig, "") );
     toggle && ( style.track = JSON.stringify( csses.open.track ).replace(/{|}/ig, "").replace(/","/ig, ";").replace(/":"/ig, ":").replace(/"/ig, "") );
@@ -421,6 +420,8 @@ const Switch = ( id, toggle = false, text, subtitle, others = {} ) => {
         toggle = !toggle;
         style.onclick && style.onclick( event, toggle );
     });
+
+    destorys.push({ id, event: "click" });
 
     return `<switch id="${id}" style="display:flex;align-items:center;position:relative;width:100%;${style.width};margin:8px 0 0 0;padding:0;overflow:visible;color:rgba(51, 51, 51, .87);cursor:pointer;${style.css.root||''};">
                 <content style="display:flex;flex-direction:column;align-items:flex-start;width:100%;${style.css.content||''};">
