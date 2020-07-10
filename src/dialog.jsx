@@ -1,8 +1,8 @@
 /*!
  * React Material Design: Dialog
  * 
- * @version : 0.0.3
- * @update  : 2018/03/15
+ * @version : 0.0.4
+ * @update  : 2020/07/04
  * @homepage: https://github.com/kenshin/mduikit
  * @license : MIT https://github.com/kenshin/mduikit/blob/master/LICENSE
  * @author  : Kenshin Wang <kenshin@ksria.com>
@@ -171,14 +171,16 @@ function Open( reactDom, cls, $target = $("html") ) {
 
 /**
  * Close Dialog
+ * 
+ * @param {string} class name, default is rootjq
  */
-function Close() {
+function Close( cls = rootjq ) {
     $.fn.sreffect = $.fn.velocity == undefined ? $.fn.animate : $.fn.velocity; // hack code for firefox
-    $( rootjq )
+    $( cls )
         .css({ top: "-100px" })
         .sreffect({ opacity: 0 }, { complete: ()=>{
-            ReactDOM.unmountComponentAtNode( $( rootjq )[0] );
-            $( rootjq ).remove();
+            ReactDOM.unmountComponentAtNode( $( cls )[0] );
+            $( cls ).remove();
         }});
 }
 

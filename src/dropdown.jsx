@@ -1,8 +1,8 @@
 /*!
  * React Material Design: Dropdown
  * 
- * @version : 0.0.3
- * @update  : 2018/06/27
+ * @version : 0.0.4
+ * @update  : 2020/03/08
  * @homepage: https://github.com/kenshin/mduikit
  * @license : MIT https://github.com/kenshin/mduikit/blob/master/LICENSE
  * @author  : Kenshin Wang <kenshin@ksria.com>
@@ -115,7 +115,7 @@ const cssinjs_list = () => {
             padding: 0,
 
             width: '100%',
-            maxHeight: '400px',
+            maxHeight: '300px',
 
             color,
             backgroundColor: background_color,

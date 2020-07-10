@@ -1,8 +1,8 @@
 /*!
  * React Material Design: Tabs
  * 
- * @version : 0.0.3
- * @update  : 2018/04/26
+ * @version : 0.0.4
+ * @update  : 2020/05/07
  * @homepage: https://github.com/kenshin/mduikit
  * @license : MIT https://github.com/kenshin/mduikit/blob/master/LICENSE
  * @author  : Kenshin Wang <kenshin@ksria.com>
@@ -79,19 +79,21 @@ const cssinjs = () => {
 
         link_icon: {
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'row',
             alignItems: 'center',
         },
 
         icon: {
             display: 'block',
 
-            width: '24px',
-            height: '24px',
+            width: '25px',
+            height: '25px',
 
             border: 'none',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
+            backgroundSize: '60%',
+            backgroundPosition: 'center',
         },
 
         border: {
@@ -185,8 +187,8 @@ const TabLabel = ( props ) => {
                data-tooltip={ tooltip } data-tooltip-position={ props.tooltip.position } data-tooltip-delay={ props.tooltip.delay }
                value={ props.value }
                disabled={ disable }>
-               <tab-icon style={ style.icon }></tab-icon>
                { props.name }
+               <tab-icon style={ style.icon }></tab-icon>
                </a>
             <tab-border style={ style.border }></tab-border>
         </tab-label>

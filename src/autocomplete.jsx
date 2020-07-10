@@ -1,8 +1,8 @@
 /*!
  * React Material Design: AutoComplete
  * 
- * @version : 0.0.1
- * @update  : 2018/04/23
+ * @version : 0.0.3
+ * @update  : 2020/03/30
  * @homepage: https://github.com/kenshin/mduikit
  * @license : MIT https://github.com/kenshin/mduikit/blob/master/LICENSE
  * @author  : Kenshin Wang <kenshin@ksria.com>
@@ -34,6 +34,12 @@ const cssinjs = () => {
                 lineHeight: 1,
             },
 
+            group: {
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'baseline',
+            },
+
             input: {
                 backgroundColor: 'transparent',
 
@@ -52,6 +58,54 @@ const cssinjs = () => {
                 boxShadow: 'none',
                 boxSizing: 'content-box',
                 transition: 'all 0.3s',
+            },
+
+            tags: {
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+            },
+
+            tag: {
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+
+                margin: '4px 4px 0 0',
+                padding: '4px 12px',
+
+                color: 'rgba(0,0,0,.87)',
+                backgroundColor: '#e0e0e0',
+
+                height: '22px',
+
+                fontSize: '.875rem',
+                fontWeight: 400,
+                whiteSpace: 'nowrap',
+
+                borderRadius: '16px',
+                outline: 'none',
+                cursor: 'pointer',
+                overflow: 'hidden',
+
+                transition: 'all 0.2s ease-in-out 0s',
+                transformOrigin: 'left',
+            },
+
+            tag_close: {
+                display: 'block',
+
+                width: '12px',
+                height: '12px',
+                marginLeft: '5px',
+
+                border: 'none',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                backgroundImage: 'url( data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAw0lEQVQoU51SsQ4BQRB976JT+AF/gY5EoVOT3F4ofZRSsnMJtU4hocNX8AMKndzIXnblHJdgi83M7Js37+0uUVjW2lkURV1V7bkyyV2WZfskSeYBxhCIyBFAq0hQiE/GmHZO4rY0TZeqOqoA52WSqziOx7TWTkguPHijqg2SHZ9vAdwBDFyuqlMW2QOLiKxJ3hxj+ZwicgbQfJryoyukXn5v+CTJ1+rGmOGbpLJpADUAfW/yQPL6Yvrna/3r4ULTN1/jAQVyi419KD+fAAAAAElFTkSuQmCC)',
+
+                cursor: 'pointer',
             },
 
             border : {
@@ -290,9 +344,14 @@ export default class AC extends React.Component {
     static defaultProps = {
         // input
         color       : "rgba(51, 51, 51, .87)",
-        value       : "",
+        // not tags mode
+        value       : undefined,
+        // tags mode
+        tags        : undefined,
         placeholder : "",
         floating    : undefined,
+        // is new
+        isNew       : false,
         // dropdown
         items       : [],
         activeColor : "rgba(255, 64, 129, 1)",
@@ -300,6 +359,7 @@ export default class AC extends React.Component {
         borderColor : undefined,
         focusColor  : undefined,
 
+        waves       : undefined,
         tooltip     : {},
     };
 
@@ -307,6 +367,7 @@ export default class AC extends React.Component {
         // input
         color       : React.PropTypes.string,
         value       : React.PropTypes.string,
+        tags        : React.PropTypes.array,
         placeholder : React.PropTypes.string,
         floating    : React.PropTypes.string,
         items       : React.PropTypes.array,
@@ -316,6 +377,7 @@ export default class AC extends React.Component {
         borderColor : undefined,
         focusColor  : undefined,
 
+        waves       : React.PropTypes.string,
         tooltip     : React.PropTypes.object,
         // event
         onChange    : React.PropTypes.func,
@@ -326,6 +388,7 @@ export default class AC extends React.Component {
     state = {
         name  : "",
         items : [],
+        tags  : this.props.tags || [],
     }
 
     // usage hack code, not usage react
@@ -341,7 +404,9 @@ export default class AC extends React.Component {
             this.refs.dropdown.dataset.state = "close";
             this.setState({ name : "", items: [] });
         }
-        else if ( event.keyCode == 40 ) {
+        else if ( event.keyCode == 8 && this.refs.input.value == "" ) {
+            this.onTagRemoveClick( this.state.tags[ this.state.tags.length -1 ] );
+        } else if ( event.keyCode == 40 ) {
             if ( $sub.length == 0 ) {
                 $target.children().first().attr( "active", true ).css( "background-color", this.props.hoverColor );
             } else {
@@ -356,15 +421,23 @@ export default class AC extends React.Component {
                 $sub.prev().attr( "active", true ).css( "background-color", this.props.hoverColor );
             }
         } else if ( event.keyCode == 13 ) {
-            this.onDropdownChange( $sub.text(), $sub.attr("value") );
+            if ( $sub.length == 0 ) {
+                this.props.isNew ?
+                    this.onDropdownChange( this.refs.input.value, this.refs.input.value )
+                    : this.onDropdownChange( $sub.text(), $sub.attr("value") );
+            } else if ( $sub.length > 0 && !this.props.tags ) {
+                this.setState({ name : "", items: [] });
+                this.refs.input.value = $sub.text();
+                this.props.onChange && this.props.onChange( $sub.text(), $sub.attr("value") );
+            } else this.onDropdownChange( $sub.text(), $sub.attr("value") );
         }
     }
 
     onTextChangeFocus( event ) {
         const style   = { ...this.style },
               $target = $( this.refs.input ),
-              $state  = $target.next().find( "text-field-state" ),
-              $float  = $target.prev();
+              $state  = $target.prev().parent().parent().find( "text-field-state" ),
+              $float  = $target.prev().parent().parent().find( "text-field-float" );
         $state.css({ ...style.state, ...style.state_focus });
         this.props.floating != "" && $float.css({ ...style.float, ...style.float_focus });
     }
@@ -372,8 +445,8 @@ export default class AC extends React.Component {
     onTextChangeBlur( event ) {
         const style   = { ...this.style },
               $target = $( event.target ),
-              $state  = $target.next().find( "text-field-state" ),
-              $float  = $target.prev();
+              $state  = $target.prev().parent().parent().find( "text-field-state" ),
+              $float  = $target.prev().parent().parent().find( "text-field-float" );
         $state.css({ ...style.state });
         if ( this.props.floating != "" && event.target.value == "" ) $float.css({ ...style.float });
     }
@@ -386,7 +459,7 @@ export default class AC extends React.Component {
             this.setState({name : event.target.value, items: this.filter( event.target.value ) });
             this.refs.dropdown.dataset.state = "open";
         }
-        this.props.onChange && this.props.onChange( name, event.target.value );
+        this.props.value && this.props.onChange && this.props.onChange( name, event.target.value );
     }
 
     onDropdownClick( event ) {
@@ -400,20 +473,41 @@ export default class AC extends React.Component {
     }
 
     onDropdownChange( name, value ) {
-        this.refs.input.value = value == undefined ? "" : value;
         this.refs.dropdown.dataset.state = "close";
-        this.setState({ name : "", items: [] });
-        this.props.onChange && this.props.onChange( name, value );
+        if ( this.props.isNew && !this.props.tags ) {
+            const idx = this.props.items.findIndex( item => item.name == name );
+            idx == -1 && this.props.items.push({ name, value: 0 });
+            idx != -1 && ( value = this.props.items[idx].value );
+            this.setState({ name : "", items: []});
+            this.refs.input.value = name;
+            this.props.onChange && this.props.onChange( name, idx == -1 ? 0 : value );
+        } else if ( this.props.value ) {
+            this.refs.input.value = value == undefined ? "" : value;
+            this.setState({ name : "", items: [] });
+            this.props.onChange && this.props.onChange( name, value );
+        } else {
+            this.state.tags.push( value || this.refs.input.value );
+            this.setState({ name : "", items: [], tags: this.state.tags });
+            this.refs.input.value = "";
+            this.props.onChange && this.props.onChange( this.state.tags );
+        }
+    }
+
+    onTagRemoveClick( value ) {
+        const idx = this.state.tags.findIndex( item => item == value );
+        idx != -1 && this.state.tags.splice( idx, 1 );
+        this.setState({ name : "", items: [], tags: this.state.tags });
+        this.props.onChange && this.props.onChange( this.state.tags );
     }
 
     filter( value ) {
         return this.props.items.filter( obj => {
-            return obj.name.includes( value );
+            return obj.name.toLowerCase().includes( value );
         });
     }
 
     componentDidMount() {
-        this.refs.input.value = this.props.value;
+        this.props.value && ( this.refs.input.value = this.props.value );
     }
 
     render() {
@@ -434,6 +528,15 @@ export default class AC extends React.Component {
             style.state.borderBottom = `2px solid ${this.props.focusColor}`;
         }
 
+        let tags;
+        if ( this.props.tags ) {
+            tags = this.state.tags.map(( item, idx ) => {
+                return (
+                    <tag className={ this.props.waves } style={ style.tag }><tag-label>{ item }</tag-label><tag-close style={ style.tag_close } onClick={ ()=>this.onTagRemoveClick( item ) }></tag-close></tag>
+                )
+            });
+        }
+
         const props = {
             placeholder :this.props.placeholder,
             onFocus  : (e)=>this.onTextChangeFocus(e),
@@ -447,8 +550,10 @@ export default class AC extends React.Component {
             <auto-complete style={ style.root }
                 data-tooltip={ tooltip.text ? tooltip.text : this.props[ tooltip.target ] } data-tooltip-position={ tooltip.position } data-tooltip-delay={ tooltip.delay }>
                 <icon ref="dropdown" style={ style.icon } data-state="close" onClick={evt=>this.onDropdownClick(evt)}></icon>
-                <text-field-float style={ style.float }>{this.props.floating}</text-field-float>
-                <input ref="input" style={ style.input } { ...props }/>
+                <text-field-gp style={ style.group }>
+                    { this.props.tags && <tags style={ style.tags }>{ tags }</tags> }
+                    <input ref="input" style={ style.input } { ...props }/>
+                </text-field-gp>
                 <ac-group>
                     <text-field-border style={ style.border }/>
                     <text-field-state style={ style.state }/>

@@ -1,8 +1,8 @@
 /*!
  * React Material Design: FAB( Floating Action Button )
  * 
- * @version : 0.0.3
- * @update  : 2018/04/26
+ * @version : 0.0.4
+ * @update  : 2020/07/06
  * @homepage: https://github.com/kenshin/mduikit
  * @license : MIT https://github.com/kenshin/mduikit/blob/master/LICENSE
  * @author  : Kenshin Wang <kenshin@ksria.com>
@@ -40,6 +40,7 @@ const cssinjs = () => {
 
                 width: '100px',
                 height: '100%',
+                zIndex: 2147483647,
               },
 
               origin : {
@@ -60,6 +61,7 @@ const cssinjs = () => {
 
                 cursor: 'pointer',
                 boxShadow: '0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2)',
+                overflow: 'initial',
               },
 
               large : {
@@ -159,10 +161,11 @@ const Button = ( props ) => {
     } else {
         props.color = props.style.backgroundColor;
     }
-    const tooltip =  props.type == "anchor" ? "" : ( props.tooltip.text ? props.tooltip.text : props[ props.tooltip.target ] );
+    const tooltip   = props.type == "anchor" ? "" : ( props.tooltip.text ? props.tooltip.text : props[ props.tooltip.target ] ),
+          tipsprops = tooltip != "" ? { 'data-balloon-pos': props.tooltip.position, 'aria-label': tooltip } : "";
     return (
-        <a style={ props.style } className={  props.waves }
-           data-tooltip={ tooltip } data-tooltip-position={ props.tooltip.position } data-tooltip-delay={ props.tooltip.delay } >
+        <a style={ props.style } className={ props.waves }
+            { ...tipsprops }>
             <i 
                 id={ props.id }
                 type={ props.type }
