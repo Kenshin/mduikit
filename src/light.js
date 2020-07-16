@@ -71,9 +71,12 @@ const Button = ( id, text, others = {} ) => {
 
 /**
  * Texteare
+ *
+ * @version : 0.0.2
+ * @update  : 2020/07/16
  * 
- * @param {string} id 
- * @param {string} text 
+ * @param {string} id
+ * @param {string} text
  * @param {object} include: disable, color, placeholder, css, width, height
  */
 const Textarea = ( id, text, others = {} ) => {
@@ -96,6 +99,7 @@ const Textarea = ( id, text, others = {} ) => {
             state   : "",
             error   : ""
         },
+        onchange: undefined,
     };
 
     Object.assign( style, param, others );
@@ -109,6 +113,9 @@ const Textarea = ( id, text, others = {} ) => {
     $( "html" ).on( "blur", `#${id}`, event => {
         $( `#field-${id}` ).find( "#state" ).css({ transform: "scaleX(0)" });
     });
+
+    style.onchange && $( "html" ).on( "keyup", "#" + id, style.onchange );
+    style.onchange && destorys.push({ id: id, event: "keyup" });
 
     destorys.push({ id, event: "focus" });
     destorys.push({ id, event: "blur" });
@@ -127,11 +134,11 @@ const Textarea = ( id, text, others = {} ) => {
 /**
  * TextField
  *
- * @version : 0.0.2
- * @update  : 2019/04/16
+ * @version : 0.0.3
+ * @update  : 2020/07/16
  * 
- * @param {string} id 
- * @param {string} text 
+ * @param {string} id
+ * @param {string} text
  * @param {object} include: disable, color, placeholder, css, width, height
  */
 const TextField = ( id, text, others = {} ) => {
@@ -154,6 +161,7 @@ const TextField = ( id, text, others = {} ) => {
             state   : "",
             error   : ""
         },
+        onchange: undefined,
     };
 
     Object.assign( style, param, others );
@@ -168,6 +176,9 @@ const TextField = ( id, text, others = {} ) => {
     $( "html" ).on( "blur", `#${id}`, event => {
         $( `#field-${id}` ).find( "#state" ).css({ transform: "scaleX(0)" });
     });
+
+    style.onchange && $( "html" ).on( "keyup", "#" + id, style.onchange );
+    style.onchange && destorys.push({ id: id, event: "keyup" });
 
     destorys && destorys.push({ id, event: "focus" });
     destorys && destorys.push({ id, event: "blur" });
