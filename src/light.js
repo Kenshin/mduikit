@@ -566,6 +566,15 @@ const Destory = () => {
     destorys = [];
 }
 
+/**
+ * Clean events by component id
+ * 
+ * @param {string} id, component id
+ */
+const DestoryById = id => {
+    destorys.forEach( item => item.id.startsWith( id ) && $( "html" ).off( item.event, `#${item.id}` ));
+}
+
 export {
     Button,
     Textarea,
@@ -574,5 +583,6 @@ export {
     Dialog,
     Switch,
     Dropdown,
-    Destory
+    Destory,
+    DestoryById,
 }
